@@ -8,6 +8,9 @@ app.use(bodyParser.json())
 
 app.use(require('./src/routes/routes'))
 
+// path image static
+app.use('/image', express.static('upload'))
+
 
 app.listen(3000, function(){
     console.log("Server Runing Port:3000!")

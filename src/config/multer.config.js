@@ -13,20 +13,20 @@ exports.config = {
             next(null, dir)
         },
         filename: (req, file, next) => {
+            
             const ext = file.mimetype.split('/')[1];
             next(null, `${file.fieldname}-${Date.now()}.${ext}`)
         },
-        limits:{
-            fileSize: 1024 * 1204 * 5
-        },
-        fileFilter: (req, file, next) => {
-            const allowed = ['image/png','image/jpg','image/ipeg']
-            if(allowed.includes(file.mimetype)){
-                next(null, true)
-            } else {
-                next({massage:'File Type not supported!'}, false)
-            }
+    }),
+    limits:{
+        fileSize: 1024 * 1204 * 5
+    },
+    fileFilter: (req, file, next) => {
+        const allowed = ['image/png','image/jpg','image/jpeg']
+        if(allowed.includes(file.mimetype)){
+            next(null, true)
+        } else {
+            next({message:'File Type not supported!'}, false)
         }
-
-    })
+    }
 }
