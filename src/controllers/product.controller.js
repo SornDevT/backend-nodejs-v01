@@ -4,28 +4,19 @@ const upload = multer(multerConfig.config).single(multerConfig.keyUpload)
 const fs = require('fs')
 const path = require('path')
 
-class Product{
-    constructor(id, image, name, price){
-        this.id = id;
-        this.image = image;
-        this.name = name;
-        this.price = price;
-    }
-  }
+// ນຳໃຊ້ Model Product
+const Product = require('../models/product.model')
+
   
   // ສ້າງຂໍ້ມູນ array ສິນຄ້າ
   
-  let products = [
-    new Product(1, null, 'Macbook Pro 2017', 3000000),
-    new Product(2, null, 'Macbook Pro 2018', 4000000),
-    new Product(3, null, 'Macbook Pro 2019', 5000000),
-    new Product(4, null, 'Macbook Pro 2020', 6000000),
-    new Product(5, null, 'Macbook Pro 2021', 7000000),
-    new Product(6, null, 'Macbook Pro 2022', 8000000),
-  ]
+
 
 exports.getProducts = (req,res) => {
-    res.json({ success: true, message:'ສຳເລັດ!' , products})
+    Product.findAll((err, product)=>{
+      if(err) return res.status(500).json({ success: false, message:err.message})
+      res.json({ success: false, message:'ສຳເລັດ!' , product})
+    })
 }
 
 exports.getProductById = (req,res) => {
@@ -47,15 +38,24 @@ exports.addProduct = (req,res) => {
       // console.log(err)
       if(err) return res.status(400).json({ success: false, message:err.message })
 
-      req.file?req.body.image = req.file.filename:req.body.image=null
-      req.body.id = products.length +1
-      const newProduct = new Product(req.body.id, req.body.image, req.body.name, req.body.price)
+      
+      // req.file?req.body.image = req.file.filename:req.body.image=null
+      // req.body.id = products.length +1
+      // const newProduct = new Product(req.body.id, req.body.image, req.body.name, req.body.price)
       // console.log(newProduct)
+
+      if(req.file) req.body.image = req.file.filename
 
       if(req.body.constructor === Object && Object.keys(req.body).length === 0) 
       return res.status(400).json({ success: false, message:'ກະລຸນາປ້ອນຂໍ້ມູນໃຫ້ຄົບຖ້ວນ!'})
-      products.push(newProduct)
-      res.status(201).json({ success: true, message:'ບັນທຶກຂໍ້ມູນສຳເລັດ!' })
+      // products.push(newProduct)
+      const newProduct = new Product(req.body)
+      // add product
+      Product.create(newProduct, (err, product)=>{
+        if(err) return res.status(500).json({ success: false, message:err.message})
+        res.status(201).json({ success: true, message:'ບັນທຶກຂໍ້ມູນສຳເລັດ!', product})
+      })
+      
 
     })
 
