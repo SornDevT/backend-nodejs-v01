@@ -32,4 +32,34 @@ Product.findAll = (result) => {
     })
 }
 
+Product.findById = (id, result) => {
+    dbConn.query('SELECT * FROM products WHERE id = ?', id, (err, res)=>{
+        if(err) return result(err, null)
+        return result(null, res)
+    })
+}
+
+Product.search = (name, result)=>{
+    // console.log(name)
+    dbConn.query('SELECT * FROM products WHERE name LIKE "%'+ name +'%" ', (err, res)=>{
+        if(err) return result(err, null)
+        return result(null, res)
+    })
+}
+
+Product.update = (id, newProduct, result)=>{
+    dbConn.query('UPDATE products SET name=?, price=?, image=? WHERE id=?', [newProduct.name, newProduct.price, newProduct.image, id], (err, res) => 
+    {
+        if(err) return result(err, null)
+        return result(null, res)
+    })
+}
+
+Product.delete = (id, result) => {
+    dbConn.query('DELETE FROM products WHERE id=?', [id], (err, res)=>{
+        if(err) return result(err, null)
+        return result(null, res)
+    })
+}
+
 module.exports = Product
