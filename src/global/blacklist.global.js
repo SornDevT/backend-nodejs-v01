@@ -1,0 +1,2 @@
+// ປະກາດໂຕແປແບບ global
+global.blacklist = []

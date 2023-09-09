@@ -1,27 +1,27 @@
 const router = require('express').Router()
 
 const ProductController = require('../controllers/product.controller')
-  
+const auth = require('../middlewares/auth.middleware')
   
   // ດຶງຂໍ້ມູນມາສະແດງທັງໝົດ
-  router.get('/', ProductController.getProducts)
+  router.get('/', auth, ProductController.getProducts)
   
   // ດຶງຂໍ້ມູນຕາມ id ໃຊ້ຮູບແບບ get pasrams
-  router.get('/get/:id', ProductController.getProductById)
+  router.get('/get/:id', auth, ProductController.getProductById)
   
   // ຄົ້ນຫາຂໍ້ມູນຈາກຊື່ໂດຍໃຊ້ get query string
-  router.get('/search', ProductController.SearchProduct)
+  router.get('/search', auth, ProductController.SearchProduct)
   
   // post ເພີ່ມຂໍ້ມູນສິນຄ້າ --------------------------
-  router.post('/', ProductController.addProduct)
+  router.post('/', auth, ProductController.addProduct)
 
   
-  router.put('/:id', ProductController.updateProduct)
+  router.put('/:id', auth, ProductController.updateProduct)
   
 
   // delete product by id
   
-  router.delete('/:id', ProductController.deleteProduct)
+  router.delete('/:id', auth, ProductController.deleteProduct)
 
   
 module.exports = router

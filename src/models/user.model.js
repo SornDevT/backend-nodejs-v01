@@ -1,4 +1,6 @@
 const dbConn = require('../config/db.config')
+const jwt = require('jsonwebtoken')
+const bcrypt = require('bcryptjs')
 
 class User{
     constructor(user){
@@ -11,6 +13,26 @@ class User{
     }
   }
 
+  User.login = (user, result) => {
+    dbConn.query('SELECT * FROM users WHERE email =?', user.email, (err, res)=>{
+        if(err) return result(err, null)
+        if(res.length == 0) return result({message:'ອີເມວລ໌ນີ້ ບໍ່ມີໃນລະບົບ!'}, null)
+        bcrypt.compare(user.password, res[0].password, (err, isMatch)=>{
+            if(!isMatch) return result({message:'ລະຫັດຜ່ານບໍ່ຖຶກຕ້ອງ!'}, null)
+            const token = jwt.sign({id:res[0].id},'mysecret-Key',{ expiresIn:'1h' })
+            return result(null, token)
+        })
+    })
+  }
+
+  User.logout = (req, result) => {
+    const token = req.headers.authorization.split(' ')[1]
+    jwt.verify(token,'mysecret-Key', (err,decode)=>{
+        if(err) return result(err, null)
+        global.blacklist.push(token)
+        result(null,decode)
+    })
+  }
 
   User.create = (newUser, result) => {
     // ຖ້າບໍ່ມີຕາຕະລາງ products ແມ່ນໃຫ້ທຳການສ້າງ ຕາຕະລາງໃໝ່

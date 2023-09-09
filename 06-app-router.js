@@ -8,6 +8,9 @@ const corsOption = {
     optionsSuccessStatus: 200
 }
 
+// ດຶງໂຕແປແບບ global ມານຳໃຊ້
+require('./src/global/blacklist.global')
+
 // ນຳໃຊ້ CORS
 app.use(cors(corsOption))
 
